@@ -1,0 +1,55 @@
+[[workspaces]]
+index = 1
+names = ["1", "2"]
+
+[[workspaces]]
+index = 2
+names = ["3", "4"]
+
+[[workspaces]]
+index = 3
+names = ["5", "6"]
+
+[[workspaces]]
+index = 4
+names = ["7", "8"]
+
+[[keybindings]]
+command = "switch-to-next-workspace"
+binding = "lwin+ctrl+right"
+
+[[keybindings]]
+command = "switch-to-prev-workspace"
+binding = "lwin+ctrl+left"
+
+[[keybindings]]
+command = "move-to-next-workspace"
+binding = "lwin+shift+right"
+
+[[keybindings]]
+command = "move-to-prev-workspace"
+binding = "lwin+shift+left"
+
+[[keybindings]]
+command = "move-to-workspace-1"
+binding = "lwin+shift+1"
+
+[[keybindings]]
+command = "move-to-workspace-2"
+binding = "lwin+shift+2"
+
+[[keybindings]]
+command = "move-to-workspace-3"
+binding = "lwin+shift+3"
+
+[[keybindings]]
+command = "move-to-workspace-4"
+binding = "lwin+shift+4"
+
+# [[keybindings]]
+# command = "change-all-to-fullscreen"
+# binding = ""
+
+# [[keybinding]]
+# command = "change-all-to-tiling"
+# binding = ""
