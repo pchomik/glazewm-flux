@@ -46,6 +46,22 @@ binding = "lwin+shift+3"
 command = "move-to-workspace-4"
 binding = "lwin+shift+4"
 
+[[keybindings]]
+command = "switch-to-workspace-1"
+binding = "lwin+1"
+
+[[keybindings]]
+command = "switch-to-workspace-2"
+binding = "lwin+2"
+
+[[keybindings]]
+command = "switch-to-workspace-3"
+binding = "lwin+3"
+
+[[keybindings]]
+command = "switch-to-workspace-4"
+binding = "lwin+4"
+
 # [[keybindings]]
 # command = "change-all-to-fullscreen"
 # binding = ""
