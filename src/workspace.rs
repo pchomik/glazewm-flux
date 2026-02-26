@@ -1,14 +1,11 @@
+use crate::command;
 use serde_json::Value;
-use std::process::Command;
 
 /// Queries glazewm for the workspaces to find the currently active workspace.
 /// This acts as a fallback when `get_focused_window` returns `None` (e.g. on an empty desktop).
 pub fn get_active_workspace() -> Option<String> {
     // Execute glazewm query
-    let output = Command::new("glazewm.exe")
-        .args(&["query", "workspaces"])
-        .output()
-        .ok()?;
+    let output = command::spawn_glazewm(&["query", "workspaces"]);
 
     if !output.status.success() {
         return None;

@@ -1,5 +1,5 @@
+use crate::command;
 use serde_json::Value;
-use std::process::Command;
 
 #[derive(Debug, Clone)]
 pub struct Window {
@@ -7,10 +7,7 @@ pub struct Window {
 }
 
 pub fn get_windows() -> Option<Vec<Window>> {
-    let output = Command::new("glazewm.exe")
-        .args(&["query", "windows"])
-        .output()
-        .ok()?;
+    let output = command::spawn_glazewm(&["query", "windows"]);
 
     if !output.status.success() {
         return None;
