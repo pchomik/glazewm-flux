@@ -6,6 +6,12 @@ use std::path::Path;
 pub struct Config {
     pub workspaces: Vec<Workspace>,
     pub keybindings: Vec<Keybinding>,
+    #[serde(default = "default_ws")]
+    pub ws: String,
+}
+
+fn default_ws() -> String {
+    "ws://127.0.0.1:6123".to_string()
 }
 
 #[derive(Debug, Deserialize, Clone)]
