@@ -1,20 +1,13 @@
-use crate::command;
+use crate::client::WsClient;
+use crate::config::Config;
 use serde_json::Value;
 
-/// Queries glazewm for the workspaces to find the currently active workspace.
-/// This acts as a fallback when `get_focused_window` returns `None` (e.g. on an empty desktop).
-pub fn get_active_workspace() -> Option<String> {
-    // Execute glazewm query
-    let output = command::spawn_glazewm(&["query", "workspaces"]);
+pub fn get_active_workspace(config: &Config) -> Option<String> {
+    let mut client = WsClient::connect(&config.ws).ok()?;
+    let output = client.query_workspaces().ok()?;
 
-    if !output.status.success() {
-        return None;
-    }
+    let json: Value = serde_json::from_str(&output).ok()?;
 
-    // Parse the JSON output
-    let json: Value = serde_json::from_slice(&output.stdout).ok()?;
-
-    // Traverse the workspace array
     let workspaces = json.get("data")?.get("workspaces")?.as_array()?;
 
     for ws in workspaces {
