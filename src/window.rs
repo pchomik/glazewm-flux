@@ -1,4 +1,5 @@
-use crate::command;
+use crate::client::WsClient;
+use crate::config::Config;
 use serde_json::Value;
 
 #[derive(Debug, Clone)]
@@ -6,17 +7,12 @@ pub struct Window {
     pub id: String,
 }
 
-pub fn get_windows() -> Option<Vec<Window>> {
-    let output = command::spawn_glazewm(&["query", "windows"]);
+pub fn get_windows(config: &Config) -> Option<Vec<Window>> {
+    let mut client = WsClient::connect(&config.ws).ok()?;
+    let output = client.query_windows().ok()?;
 
-    if !output.status.success() {
-        return None;
-    }
+    let json: Value = serde_json::from_str(&output).ok()?;
 
-    // Parse the JSON output
-    let json: Value = serde_json::from_slice(&output.stdout).ok()?;
-
-    // Traverse the workspace array
     let windows = json.get("data")?.get("windows")?.as_array()?;
     let mut windows_list = Vec::new();
 
@@ -44,9 +40,7 @@ pub fn get_windows() -> Option<Vec<Window>> {
             .and_then(|n| n.as_str())
             .unwrap_or("")
             .to_string();
-
         let window = Window { id: window_id };
-
         windows_list.push(window);
     }
 
