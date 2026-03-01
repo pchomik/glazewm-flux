@@ -1,7 +1,7 @@
 #![windows_subsystem = "windows"]
 
 mod actions;
-pub mod command;
+pub mod client;
 mod config;
 mod hook;
 mod keybindings;
