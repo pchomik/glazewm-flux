@@ -7,48 +7,38 @@ pub struct Window {
     pub id: String,
 }
 
-pub fn get_windows(config: &Config) -> Option<Vec<Window>> {
-    let mut client = WsClient::connect(&config.ws).ok()?;
-    let output = client.query_windows().ok()?;
+pub fn get_windows(config: &Config) -> Result<Vec<Window>, Box<dyn std::error::Error>> {
+    let mut client = WsClient::connect(&config.ws)?;
+    let output = client.query_windows()?;
 
-    let json: Value = serde_json::from_str(&output).ok()?;
+    let json: Value = serde_json::from_str(&output)?;
 
-    let windows = json.get("data")?.get("windows")?.as_array()?;
+    let windows = json
+        .get("data")
+        .and_then(|d| d.get("windows"))
+        .and_then(|w| w.as_array())
+        .ok_or("Could not parse windows array")?;
     let mut windows_list = Vec::new();
 
     for window in windows {
-        let window_type = window
-            .get("type")
-            .and_then(|n| n.as_str())
-            .unwrap_or("")
-            .to_string();
-        if window_type != "window" {
+        if window.get("type").and_then(|n| n.as_str()) != Some("window") {
             continue;
         }
 
-        let display_state = window
-            .get("displayState")
-            .and_then(|n| n.as_str())
-            .unwrap_or("")
-            .to_string();
-        if display_state != "shown" {
+        if window.get("displayState").and_then(|n| n.as_str()) != Some("shown") {
             continue;
         }
 
-        let window_id = window
-            .get("id")
-            .and_then(|n| n.as_str())
-            .unwrap_or("")
-            .to_string();
-        let window = Window { id: window_id };
-        windows_list.push(window);
+        if let Some(id) = window.get("id").and_then(|n| n.as_str()) {
+            windows_list.push(Window { id: id.to_string() });
+        }
     }
 
     println!("Windows: {:?}", windows_list);
 
     if windows_list.is_empty() {
-        None
+        Err("No windows found".into())
     } else {
-        Some(windows_list)
+        Ok(windows_list)
     }
 }
